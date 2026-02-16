@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Voucher - {{ booking.booking_id }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --brand-dark: #0f172a;
+            --brand-blue: #2563eb;
+            --text-grey: #64748b;
+            --border: #e2e8f0;
+        }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: #f1f5f9; 
+            padding: 40px 20px; 
+            margin: 0; 
+            color: var(--brand-dark);
+        }
+        
+        /* --- Tool Bar --- */
+        .no-print-header {
+            max-width: 800px; margin: 0 auto 20px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        /* --- Main Document --- */
+        .receipt-container { 
+            background: white; 
+            max-width: 800px; 
+            margin: auto; 
+            padding: 50px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.05); 
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        /* Branding Header */
+        .doc-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: flex-start;
+            border-bottom: 2px solid var(--brand-dark); 
+            padding-bottom: 30px; 
+            margin-bottom: 30px;
+        }
+
+        .brand-logo h1 { 
+            margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -1px; 
+            display: flex; align-items: center; gap: 10px;
+        }
+        .brand-logo p { margin: 5px 0 0; color: var(--text-grey); font-size: 13px; font-weight: 500; }
+
+        .invoice-meta { text-align: right; }
+        .invoice-meta h2 { margin: 0; font-size: 20px; color: var(--brand-blue); text-transform: uppercase; letter-spacing: 2px; }
+        .invoice-meta p { margin: 5px 0 0; font-size: 14px; font-weight: 600; color: var(--text-grey); }
+
+        /* Sections */
+        .grid-row { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 30px; }
+        
+        .section-label { 
+            font-size: 11px; font-weight: 800; text-transform: uppercase; 
+            color: var(--brand-blue); letter-spacing: 1px; margin-bottom: 12px;
+            display: block; border-bottom: 1px solid var(--border); padding-bottom: 5px;
+        }
+
+        .data-item { margin-bottom: 15px; }
+        .data-item strong { display: block; font-size: 10px; color: var(--text-grey); text-transform: uppercase; }
+        .data-item span { font-size: 15px; font-weight: 600; display: block; margin-top: 2px; }
+
+        /* Passport Identity Box */
+        .identity-card { 
+            border: 1px solid var(--border); 
+            border-radius: 12px; 
+            padding: 15px; 
+            background: #f8fafc;
+            text-align: center;
+        }
+        .identity-card img { max-width: 100%; height: 180px; object-fit: cover; border-radius: 8px; border: 1px solid #fff; }
+
+        /* Financial Table */
+        .financial-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .financial-table th { text-align: left; font-size: 12px; color: var(--text-grey); padding: 10px; border-bottom: 1px solid var(--border); }
+        .financial-table td { padding: 15px 10px; font-weight: 600; border-bottom: 1px solid #f8fafc; }
+        .total-row { background: var(--brand-dark); color: white; }
+        .total-row td { padding: 20px 10px; font-size: 18px; border-radius: 0 0 8px 8px; }
+
+        /* T&C Section */
+        .terms-box { 
+            margin-top: 40px; 
+            background: #fff; 
+            border: 1px dashed var(--border); 
+            padding: 20px; 
+            border-radius: 8px; 
+        }
+        .terms-box h4 { margin: 0 0 10px 0; font-size: 12px; text-transform: uppercase; }
+        .terms-box p { margin: 0; font-size: 11px; color: var(--text-grey); line-height: 1.6; }
+
+        /* Action Buttons */
+        .btn { 
+            padding: 12px 24px; border-radius: 8px; font-weight: 700; 
+            text-decoration: none; cursor: pointer; border: none; 
+            display: inline-flex; align-items: center; gap: 8px; transition: 0.3s;
+            font-size: 14px;
+        }
+        .btn-back { color: var(--text-grey); background: white; border: 1px solid var(--border); }
+        .btn-back:hover { background: #f8fafc; color: var(--brand-dark); }
+        .btn-download { background: var(--brand-dark); color: white; }
+        .btn-download:hover { background: #000; transform: translateY(-2px); }
+
+        @media print { 
+            .no-print-header { display: none !important; } 
+            body { padding: 0; background: white; } 
+            .receipt-container { box-shadow: none; border: none; max-width: 100%; padding: 0; }
+            .identity-card { background: #fff; border: 1px solid #eee; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="no-print-header">
+    <a href="{% url 'dashboard' %}" class="btn btn-back">
+        <i class="fas fa-chevron-left"></i> Back to Portal
+    </a>
+    <button onclick="window.print()" class="btn btn-download">
+        <i class="fas fa-print"></i> Print Voucher
+    </button>
+</div>
+
+<div class="receipt-container">
+    <div class="doc-header">
+        <div class="brand-logo">
+            <h1><i class="fas fa-crown" style="color:var(--brand-blue)"></i> RAZAK & SONS</h1>
+            <p>Luxury Travel & Destination Management</p>
+            <p style="font-size: 11px;"><i class="fas fa-location-dot"></i> Ahmedabad Office, Gujarat, India</p>
+        </div>
+        <div class="invoice-meta">
+            <h2>BOOKING VOUCHER</h2>
+            <p>REF: {{ booking.booking_id }}</p>
+            <p>DATE: {{ booking.created_at|date:"d M Y" }}</p>
+        </div>
+    </div>
+
+    <div class="grid-row">
+        <div>
+            <span class="section-label">Traveler Details</span>
+            <div class="data-item">
+                <strong>Primary Customer</strong>
+                <span>{{ booking.customer_name }}</span>
+            </div>
+            <div class="data-item">
+                <strong>Registered Address</strong>
+                <span style="font-weight: 400; font-size: 13px;">{{ booking.address }}</span>
+            </div>
+            <div class="data-item">
+                <strong>Group Size</strong>
+                <span>{{ booking.total_members }} Person(s)</span>
+            </div>
+        </div>
+        <div>
+            <span class="section-label">Identity Verification</span>
+            <div class="identity-card">
+                {% if booking.passport_photo %}
+                    <img src="{{ booking.passport_photo.url }}" alt="Passport Scan">
+                {% else %}
+                    <div style="padding: 60px 0; color: #cbd5e1;">
+                        <i class="fas fa-user-slash fa-3x"></i>
+                        <p style="font-size: 11px; margin-top: 10px;">PASSPORT NOT ATTACHED</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <span class="section-label">Itinerary Preferences</span>
+    <div class="grid-row" style="grid-template-columns: repeat(3, 1fr); gap: 20px;">
+        {% for key, value in booking.additional_info.items %}
+            <div class="data-item">
+                <strong>{{ key|title }}</strong>
+                <span>{{ value|default:"--" }}</span>
+            </div>
+        {% empty %}
+            <p style="grid-column: span 3; color: var(--text-grey); font-size: 12px;">Standard package requirements apply.</p>
+        {% endfor %}
+    </div>
+
+    <span class="section-label">Payment Summary</span>
+    <table class="financial-table">
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Quantity</th>
+                <th style="text-align: right;">Amount (INR)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Customized Tour Package - Ref {{ booking.booking_id }}</td>
+                <td>{{ booking.total_members }} Adult(s)</td>
+                <td style="text-align: right;">₹{{ booking.tour_price }}</td>
+            </tr>
+            <tr class="total-row">
+                <td colspan="2" style="font-weight: 800;">TOTAL PAYABLE</td>
+                <td style="text-align: right; font-weight: 800;">₹{{ booking.tour_price }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="terms-box">
+        <h4>General Terms & Conditions</h4>
+        <p>
+            1. This voucher is valid only for the mentioned travelers and dates.<br>
+            2. Any cancellation or modification is subject to Razak & Sons company policy.<br>
+            3. Travelers must carry original identification documents during the journey.<br>
+            4. This is a computer-generated document and does not require a physical signature for digital validation.
+        </p>
+    </div>
+
+    <div style="margin-top: 40px; text-align: center;">
+        <p style="font-size: 10px; color: var(--text-grey); text-transform: uppercase; letter-spacing: 2px;">
+            www.razakandsons.com • Verified Management System
+        </p>
+    </div>
+</div>
+
+</body>
+</html>

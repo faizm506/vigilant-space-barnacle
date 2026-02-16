@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Razak & Sons | Enterprise Dashboard</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+
+    <style>
+        :root {
+            --brand-primary: #0f172a;
+            --brand-accent: #3b82f6;
+            --success: #2ecc71;
+            --danger: #e11d48;
+            --warning: #f59e0b;
+            --bg-body: #f8fafc;
+            --sidebar-width: 260px;
+            --glass: rgba(255, 255, 255, 0.9);
+        }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            margin: 0; 
+            background-color: var(--bg-body); 
+            display: flex; 
+            color: var(--brand-primary); 
+        }
+
+        /* --- Sidebar --- */
+        .sidebar { 
+            width: var(--sidebar-width); 
+            height: 100vh; 
+            background: var(--brand-primary); 
+            color: white; 
+            position: fixed; 
+            display: flex; 
+            flex-direction: column;
+            z-index: 100;
+        }
+        .sidebar-brand { 
+            padding: 40px 20px; 
+            text-align: center; 
+            font-size: 1.4rem; 
+            font-weight: 800; 
+            letter-spacing: 1px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .sidebar-menu { flex-grow: 1; padding: 20px 0; }
+        .sidebar-menu a { 
+            display: flex; align-items: center; 
+            color: rgba(255,255,255,0.6); 
+            padding: 16px 28px; 
+            text-decoration: none; 
+            transition: 0.3s; 
+            gap: 12px;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+        .sidebar-menu a:hover, .sidebar-menu a.active { 
+            background: rgba(255,255,255,0.05); 
+            color: white; 
+            border-left: 4px solid var(--brand-accent);
+        }
+        .sidebar-footer { padding: 20px; border-top: 1px solid rgba(255,255,255,0.05); }
+
+        /* --- Main Content --- */
+        .main-content { 
+            margin-left: var(--sidebar-width); 
+            width: calc(100% - var(--sidebar-width)); 
+            padding: 40px 60px; 
+        }
+
+        /* --- Header --- */
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+        .header h1 { margin: 0; font-size: 1.85rem; font-weight: 800; letter-spacing: -1px; }
+        
+        .user-profile {
+            display: flex; align-items: center; gap: 12px; 
+            background: white; padding: 8px 18px; 
+            border-radius: 50px; border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+        .user-avatar {
+            width: 35px; height: 35px; background: var(--brand-primary); 
+            color: white; border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; 
+            font-weight: 800; font-size: 0.8rem;
+        }
+
+        /* --- Stats Grid --- */
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 40px; }
+        .stat-card { 
+            background: white; padding: 28px; border-radius: 20px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.03); 
+            display: flex; align-items: center; gap: 20px;
+            border: 1px solid rgba(0,0,0,0.02);
+        }
+        .stat-icon { 
+            width: 55px; height: 55px; border-radius: 14px; 
+            display: flex; align-items: center; justify-content: center; font-size: 1.4rem; 
+        }
+        .icon-blue { background: #eff6ff; color: #3b82f6; }
+        .icon-green { background: #f0fdf4; color: #22c55e; }
+        .icon-gold { background: #fffbeb; color: #f59e0b; }
+        .icon-red { background: #fff1f2; color: #e11d48; }
+
+        .stat-label { font-size: 0.75rem; color: #64748b; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
+        .stat-value { font-size: 1.6rem; font-weight: 800; margin-top: 4px; }
+
+        /* --- Pulse Animation --- */
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0.2); }
+            70% { box-shadow: 0 0 0 10px rgba(225, 29, 72, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0); }
+        }
+        .unpaid-alert { border: 1.5px solid #fecdd3; animation: pulse-red 2s infinite; }
+
+        /* --- Controls --- */
+        .controls { display: flex; justify-content: space-between; margin-bottom: 25px; gap: 20px; }
+        .search-wrapper { position: relative; flex-grow: 1; max-width: 450px; }
+        .search-wrapper i { position: absolute; left: 18px; top: 15px; color: #94a3b8; }
+        .search-input { 
+            width: 100%; padding: 14px 14px 14px 48px; 
+            border: 1px solid #e2e8f0; border-radius: 14px; 
+            font-size: 0.95rem; background: white;
+            transition: 0.3s;
+        }
+        .search-input:focus { outline: none; border-color: var(--brand-accent); box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.05); }
+
+        .btn { 
+            padding: 12px 24px; border-radius: 12px; text-decoration: none; 
+            font-weight: 700; display: inline-flex; align-items: center; gap: 10px; 
+            transition: 0.3s; font-size: 0.9rem;
+        }
+        .btn-primary { background: var(--brand-accent); color: white; }
+        .btn-success { background: var(--brand-primary); color: white; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); }
+
+        /* --- Table Section --- */
+        .data-card {
+            background: white; border-radius: 24px; padding: 10px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.02);
+            border: 1px solid rgba(0,0,0,0.04);
+            animation: fadeIn 0.6s ease-out;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+        th { 
+            padding: 15px 20px; text-align: left; font-size: 0.7rem; 
+            text-transform: uppercase; color: #94a3b8; letter-spacing: 1.5px; font-weight: 800;
+        }
+        td { 
+            background: #fff; padding: 18px 20px; 
+            border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9; 
+            font-size: 0.95rem; transition: 0.2s;
+        }
+        tr td:first-child { border-left: 1px solid #f1f5f9; border-top-left-radius: 16px; border-bottom-left-radius: 16px; }
+        tr td:last-child { border-right: 1px solid #f1f5f9; border-top-right-radius: 16px; border-bottom-right-radius: 16px; }
+        tr:hover td { background: #f8fafc; border-color: #e2e8f0; }
+
+        .uid-badge { 
+            background: #f1f5f9; color: var(--brand-primary); 
+            padding: 6px 12px; border-radius: 8px; 
+            font-family: 'Courier New', monospace; font-weight: 800; font-size: 0.8rem;
+        }
+        .status-badge { padding: 6px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
+        .status-paid { background: #dcfce7; color: #166534; }
+        .status-partial { background: #fef3c7; color: #92400e; }
+        .status-pending { background: #fee2e2; color: #991b1b; }
+
+        .btn-view-small { 
+            padding: 8px 18px; background: #f1f5f9; color: var(--brand-primary); 
+            border-radius: 10px; text-decoration: none; font-size: 0.8rem; font-weight: 800; transition: 0.3s;
+        }
+        .btn-view-small:hover { background: var(--brand-primary); color: white; }
+        .btn-delete-small { 
+            background: transparent; border: none; color: #cbd5e1; 
+            padding: 10px; cursor: pointer; transition: 0.3s; border-radius: 8px;
+        }
+        .btn-delete-small:hover { background: #fff1f2; color: var(--danger); }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <i class="fas fa-crown"></i> RAZAK & SONS
+        </div>
+        <nav class="sidebar-menu">
+            <a href="{% url 'dashboard' %}" class="active"><i class="fas fa-grid-2"></i> Dashboard</a>
+            <a href="/admin"><i class="fas fa-shield-check"></i> Admin Access</a>
+            <a href="{% url 'new_booking' %}"><i class="fas fa-plus-circle"></i> New Entry</a>
+        </nav>
+        <div class="sidebar-footer">
+            <form id="logout-form" action="{% url 'logout' %}" method="post" style="display: none;">
+                {% csrf_token %}
+            </form>
+            <a href="javascript:void(0)" onclick="document.getElementById('logout-form').submit();" style="color: #fda4af; text-decoration: none; font-weight: 600; font-size: 0.9rem;">
+                <i class="fas fa-power-off"></i> Logout
+            </a>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="header">
+            <div>
+                <h1>Business Overview</h1>
+                <p style="color: #64748b; margin-top: 4px; font-size: 0.9rem;">Enterprise Travel Management Systems</p>
+            </div>
+            
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <div class="user-profile">
+                    <div class="user-avatar">{{ request.user.username|slice:":1"|upper }}</div>
+                    <div style="display: flex; flex-direction: column;">
+                        <span style="font-size: 0.85rem; font-weight: 800;">{{ request.user.username|title }}</span>
+                        <span style="font-size: 0.65rem; color: var(--success); font-weight: 700; text-transform: uppercase;">● Online</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon icon-green"><i class="fas fa-users"></i></div>
+                <div>
+                    <div class="stat-label">Total Travelers</div>
+                    <div class="stat-value">{{ total_travelers|default:"0" }}</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon icon-gold"><i class="fas fa-suitcase-rolling"></i></div>
+                <div>
+                    <div class="stat-label">Active Bookings</div>
+                    <div class="stat-value">{{ bookings.count }}</div>
+                </div>
+            </div>
+
+            <div class="stat-card {% if unpaid_count > 0 %}unpaid-alert{% endif %}">
+                <div class="stat-icon icon-red"><i class="fas fa-clock-rotate-left"></i></div>
+                <div>
+                    <div class="stat-label">Pending Payments</div>
+                    <div class="stat-value" style="color: var(--danger);">{{ unpaid_count|default:"0" }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <form method="GET" action="{% url 'dashboard' %}" class="search-wrapper" 
+                  hx-get="{% url 'dashboard' %}" 
+                  hx-trigger="keyup changed delay:500ms from:.search-input" 
+                  hx-target="#booking-table-body">
+                <i class="fas fa-search"></i>
+                <input type="text" name="search" class="search-input" 
+                       placeholder="Search by client or reference ID..." 
+                       value="{{ request.GET.search }}">
+            </form>
+            <div style="display: flex; gap: 12px;">
+                <a href="{% url 'export_data' %}" class="btn btn-primary"><i class="fas fa-file-export"></i> Export CSV</a>
+                <a href="{% url 'new_booking' %}" class="btn btn-success"><i class="fas fa-plus"></i> New Booking</a>
+            </div>
+        </div>
+
+        <div class="data-card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Reference</th>
+                        <th>Client Name</th>
+                        <th>Package Price</th>
+                        <th>Status</th>
+                        <th>Group</th>
+                        <th>Booking Date</th>
+                        <th style="text-align: center;">Details</th>
+                        <th style="text-align: center;"></th>
+                    </tr>
+                </thead>
+                <tbody id="booking-table-body">
+                    {% for booking in bookings %}
+                    <tr>
+                        <td><span class="uid-badge">{{ booking.booking_id }}</span></td>
+                        <td style="font-weight: 800; color: var(--brand-primary);">{{ booking.customer_name }}</td>
+                        <td style="font-weight: 700;">₹{{ booking.tour_price }}</td>
+                        <td>
+                            <span class="status-badge 
+                                {% if booking.payment_status == 'Paid' %}status-paid
+                                {% elif booking.payment_status == 'Partial' %}status-partial
+                                {% else %}status-pending{% endif %}">
+                                {{ booking.payment_status }}
+                            </span>
+                        </td>
+                        <td style="color: #64748b; font-size: 0.85rem;">
+                            <i class="fas fa-user-group" style="margin-right: 6px; font-size: 0.7rem;"></i>{{ booking.total_members }}
+                        </td>
+                        <td style="color: #94a3b8; font-size: 0.8rem;">{{ booking.created_at|date:"M d, Y" }}</td>
+                        
+                        <td style="text-align: center;">
+                            <a href="{% url 'booking_detail' booking.booking_id %}" class="btn-view-small">
+                                View File
+                            </a>
+                        </td>
+
+                        <td style="text-align: center;">
+                            <form action="{% url 'delete_booking' booking.booking_id %}" method="POST" onsubmit="return confirm('Archive record for {{ booking.customer_name }}?');">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-delete-small">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 60px; color: #94a3b8;">
+                            <i class="fas fa-inbox" style="font-size: 2rem; display: block; margin-bottom: 12px; opacity: 0.3;"></i>
+                            No active records found.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+</body>
+</html>
