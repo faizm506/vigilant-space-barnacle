@@ -3,188 +3,237 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Razak & Sons | Management Login</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <title>Management Login | Razak & Sons</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
-            --brand-primary: #1e293b; /* Deep Navy */
-            --brand-accent: #3b82f6;  /* Modern Blue */
-            --glass-bg: rgba(255, 255, 255, 0.9);
-            --text-main: #0f172a;
+            --brand-dark: #0f172a;
+            --brand-accent: #2563eb;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --white: #ffffff;
         }
+
+        * { box-sizing: border-box; }
 
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
             margin: 0;
-            height: 100vh;
+            min-height: 100vh;
+            background-color: var(--white);
+            color: var(--brand-dark);
+        }
+
+        /* --- Responsive Layout Engine --- */
+        .login-wrapper {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+            flex-direction: row;
+        }
+
+        /* Branding Side */
+        .brand-side {
+            flex: 1.2;
+            background: var(--brand-dark);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 60px 80px;
+            color: white;
+        }
+
+        /* Login Side */
+        .login-side {
+            flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-            /* Premium gradient background */
-            background: radial-gradient(circle at top right, #f8fafc, #e2e8f0);
-            overflow: hidden;
+            padding: 40px 20px;
+            background: var(--white);
         }
 
-        /* Ambient background shapes for a modern look */
-        .bg-shape {
-            position: absolute;
-            z-index: -1;
-            filter: blur(80px);
-            border-radius: 50%;
+        /* --- Branding Typography --- */
+        .brand-side h1 {
+            font-size: clamp(2.5rem, 5vw, 3.8rem);
+            font-weight: 800;
+            letter-spacing: -2px;
+            margin: 0;
+            line-height: 1.1;
         }
-        .shape-1 { width: 400px; height: 400px; background: #dbeafe; top: -100px; right: -100px; }
-        .shape-2 { width: 300px; height: 300px; background: #f1f5f9; bottom: -50px; left: -50px; }
 
-        .login-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            padding: 50px 40px;
-            border-radius: 24px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
+        .brand-side p {
+            font-size: clamp(0.95rem, 2vw, 1.1rem);
+            color: rgba(255,255,255,0.6);
+            margin-top: 24px;
+            max-width: 440px;
+            line-height: 1.6;
+        }
+
+        /* --- Form Elements --- */
+        .form-container {
             width: 100%;
-            max-width: 420px;
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            animation: slideUp 0.6s ease-out;
+            max-width: 400px;
+            animation: fadeIn 0.8s ease-out;
         }
 
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .brand-logo {
-            text-align: center;
-            margin-bottom: 40px;
+        .brand-header { margin-bottom: 40px; }
+        .brand-header i { color: var(--brand-accent); font-size: 1.8rem; margin-bottom: 15px; display: block; }
+        .brand-header h2 { font-size: 1.75rem; font-weight: 800; margin: 0; letter-spacing: -0.5px; }
+
+        form p { display: flex; flex-direction: column; margin-bottom: 20px; }
+        
+        label { 
+            font-size: 0.85rem; 
+            font-weight: 700; 
+            color: var(--text-main); 
+            margin-bottom: 8px; 
         }
 
-        .brand-logo i {
-            font-size: 3rem;
-            color: var(--brand-primary);
-            margin-bottom: 10px;
-        }
-
-        .brand-logo h2 {
-            margin: 0;
-            font-weight: 800;
-            color: var(--brand-primary);
-            letter-spacing: -1px;
-            text-transform: uppercase;
-            font-size: 1.5rem;
-        }
-
-        .brand-logo p {
-            margin: 5px 0 0;
-            color: #64748b;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-
-        /* Django Form Styling */
-        form p {
-            display: flex;
-            flex-direction: column;
-            margin-bottom: 20px;
-        }
-
-        label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #475569;
-            margin-bottom: 8px;
-            padding-left: 4px;
-        }
-
-        input[type="text"], input[type="password"] {
-            padding: 14px 18px;
+        input {
+            padding: 14px 16px;
             border: 1.5px solid #e2e8f0;
             border-radius: 12px;
             font-size: 1rem;
+            transition: all 0.25s ease;
             background: #f8fafc;
-            transition: all 0.3s ease;
-            color: var(--text-main);
+            width: 100%;
+            font-family: inherit;
         }
 
         input:focus {
             outline: none;
             border-color: var(--brand-accent);
-            background: #fff;
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.08);
         }
 
         .btn-login {
             width: 100%;
             padding: 16px;
-            background: var(--brand-primary);
+            background: var(--brand-dark);
             color: white;
             border: none;
             border-radius: 12px;
             font-size: 1rem;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             margin-top: 10px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
         .btn-login:hover {
             background: #000;
             transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.15);
         }
 
-        .error-message {
-            background: #fef2f2;
-            color: #b91c1c;
-            padding: 12px;
-            border-radius: 10px;
+        /* --- Error States --- */
+        .error-box {
+            background: #fff1f2;
+            color: #e11d48;
+            padding: 14px;
+            border-radius: 12px;
             font-size: 0.85rem;
-            text-align: center;
+            font-weight: 700;
             margin-bottom: 25px;
-            border: 1px solid #fee2e2;
+            border-left: 4px solid #e11d48;
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 8px;
+            gap: 10px;
         }
 
-        .footer-text {
+        .footer-note {
+            margin-top: 40px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 600;
             text-align: center;
-            margin-top: 30px;
-            font-size: 0.8rem;
-            color: #94a3b8;
+        }
+
+        /* --- MOBILE RESPONSIVENESS --- */
+        @media (max-width: 992px) {
+            .login-wrapper { flex-direction: column; }
+            
+            .brand-side {
+                flex: none;
+                padding: 40px 30px;
+                text-align: center;
+                align-items: center;
+            }
+
+            .brand-side h1 { font-size: 2.2rem; }
+            .brand-side p { margin-top: 10px; font-size: 0.9rem; }
+            
+            .brand-side div[style*="top: 60px"] {
+                position: static !important;
+                margin-bottom: 15px;
+            }
+
+            .login-side {
+                padding: 50px 25px;
+            }
+
+            .brand-header { text-align: center; }
+            .brand-header i { margin-left: auto; margin-right: auto; }
+        }
+
+        @media (max-width: 480px) {
+            .brand-side { padding: 40px 20px; }
+            .login-side { padding: 40px 20px; }
+            .brand-header h2 { font-size: 1.5rem; }
+            .btn-login { padding: 14px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="bg-shape shape-1"></div>
-    <div class="bg-shape shape-2"></div>
-
-    <div class="login-card">
-        <div class="brand-logo">
-            <i class="fas fa-crown"></i>
-            <h2>RAZAK & SONS</h2>
-            <p>Management Enterprise Portal</p>
+    <div class="login-wrapper">
+        <div class="brand-side">
+            <div style="position: absolute; top: 60px; left: 80px; font-weight: 800; letter-spacing: 2px; font-size: 0.75rem; color: var(--brand-accent); text-transform: uppercase;">
+                Established 2026
+            </div>
+            <h1>Razak & Sons.</h1>
+            <p>A sophisticated portal for world-class travel management and royal enterprise logistics.</p>
+            
+            <div style="position: absolute; bottom: 0; right: 0; width: 250px; height: 250px; background: linear-gradient(135deg, transparent, rgba(59, 130, 246, 0.08)); border-radius: 100% 0 0 0;"></div>
         </div>
 
-        {% if form.errors %}
-            <div class="error-message">
-                <i class="fas fa-exclamation-circle"></i> Invalid credentials. Please try again.
+        <div class="login-side">
+            <div class="form-container">
+                <div class="brand-header">
+                    <i class="fas fa-crown"></i>
+                    <h2>Manager Access</h2>
+                    <p style="color: var(--text-muted); margin-top: 6px; font-weight: 500; font-size: 0.95rem;">Please enter your credentials.</p>
+                </div>
+
+                {% if form.errors %}
+                    <div class="error-box">
+                        <i class="fas fa-shield-halved"></i> Denied. Verify login details.
+                    </div>
+                {% endif %}
+
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    
+                    <button type="submit" class="btn-login">
+                        Launch Enterprise Portal
+                    </button>
+                </form>
+
+                <div class="footer-note">
+                    &copy; 2026 Razak & Sons • Internal Security v2.4
+                </div>
             </div>
-        {% endif %}
-
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="btn-login">
-                Sign In to Dashboard
-            </button>
-        </form>
-
-        <div class="footer-text">
-            &copy; 2026 Razak & Sons Travel Group. All rights reserved.
         </div>
     </div>
 

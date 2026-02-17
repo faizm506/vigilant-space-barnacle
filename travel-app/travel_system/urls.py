@@ -38,6 +38,10 @@ urlpatterns = [
     path('dashboard/view/<str:booking_id>/', views.booking_detail, name='booking_detail'),
     path('dashboard/delete/<str:booking_id>/', views.delete_booking, name='delete_booking'),
 
+    path('dashboard/archives/', views.batch_export_view, name='batch_export'),
+
+    path('dashboard/archives/zip/', views.export_batch_zip, name='export_zip'),
+
     
 
     

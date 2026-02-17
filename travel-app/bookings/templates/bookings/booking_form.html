@@ -12,12 +12,13 @@
         :root {
             --brand-primary: #0f172a;
             --brand-accent: #3b82f6;
+            --brand-gold: #eab308;
             --bg-body: #f8fafc;
             --white: #ffffff;
             --border: #e2e8f0;
             --text-main: #1e293b;
             --text-muted: #64748b;
-            --success: #2ecc71;
+            --success: #10b981;
         }
 
         * { box-sizing: border-box; }
@@ -26,19 +27,16 @@
             font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: var(--bg-body);
             margin: 0;
-            padding: clamp(10px, 3vw, 40px);
+            padding: clamp(10px, 4vw, 50px);
             color: var(--brand-primary);
             line-height: 1.6;
         }
 
-        .container { 
-            max-width: 1200px; 
-            margin: 0 auto; 
-        }
+        .container { max-width: 1250px; margin: 0 auto; }
 
-        /* --- Header --- */
+        /* --- Header: Luxury Styling --- */
         .form-header {
-            margin-bottom: 40px;
+            margin-bottom: clamp(30px, 5vw, 50px);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -48,12 +46,13 @@
         .form-header h1 { 
             margin: 0; 
             font-weight: 800; 
-            font-size: clamp(1.8rem, 4vw, 2.5rem); 
-            letter-spacing: -1.5px; 
+            font-size: clamp(1.8rem, 5vw, 2.8rem); 
+            letter-spacing: -2px; 
+            color: var(--brand-primary);
         }
-        .form-header p { margin: 5px 0 0; color: var(--text-muted); font-weight: 500; }
+        .form-header p { margin: 8px 0 0; color: var(--brand-accent); font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; font-size: 0.7rem; }
 
-        /* --- Layout Grid --- */
+        /* --- Main Content Grid --- */
         .main-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -62,65 +61,64 @@
         }
 
         @media (min-width: 1024px) {
-            .main-grid { grid-template-columns: 1.4fr 0.6fr; }
+            .main-grid { grid-template-columns: 1.4fr 0.6fr; gap: 40px; }
         }
 
-        /* --- Card Styling --- */
+        /* --- Luxury Card Styling --- */
         .booking-card {
             background: var(--white);
-            border-radius: 28px;
-            padding: clamp(24px, 5vw, 45px);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.04);
+            border-radius: clamp(24px, 4vw, 32px);
+            padding: clamp(20px, 5vw, 50px);
+            box-shadow: 0 40px 100px -20px rgba(15, 23, 42, 0.06);
             border: 1px solid var(--border);
-            width: 100%;
+            position: relative;
+            overflow: hidden;
         }
 
         .section-title {
             font-size: 0.75rem;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--brand-accent);
+            letter-spacing: 2.5px;
+            color: var(--brand-primary);
             font-weight: 800;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
             display: flex;
             align-items: center;
             gap: 12px;
         }
+        .section-title i { color: var(--brand-accent); font-size: 1rem; }
 
-        /* --- Form Grid Logic --- */
+        /* --- Form Inputs --- */
         .form-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 24px;
-            margin-bottom: 35px;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
         }
         .full-width { grid-column: 1 / -1; }
 
         .input-group { display: flex; flex-direction: column; gap: 8px; width: 100%; }
-        label { font-size: 0.85rem; font-weight: 700; color: var(--text-main); margin-left: 2px; }
+        label { font-size: 0.8rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.2px; }
 
         input, textarea, select {
-            padding: 15px 18px;
+            padding: 14px 18px;
             border: 1.5px solid var(--border);
             border-radius: 14px;
             font-size: 1rem;
             font-family: inherit;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             background: #fcfdfe;
             width: 100%;
-            max-width: 100%;
+            color: var(--brand-primary);
+            appearance: none; /* Mobile consistency */
         }
 
-        textarea {
-            resize: vertical;
-            min-height: 100px;
-            max-height: 250px;
-        }
+        textarea { resize: vertical; min-height: 100px; }
 
         input:focus, textarea:focus, select:focus {
             outline: none;
             border-color: var(--brand-accent);
-            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.1);
             background: var(--white);
         }
 
@@ -132,55 +130,79 @@
             text-align: center;
             background: #f8fafc;
             cursor: pointer;
-            transition: 0.3s;
+            transition: 0.3s ease;
         }
-        .file-upload:hover { border-color: var(--brand-accent); background: #eff6ff; }
-        .file-upload i { font-size: 2.2rem; color: #94a3b8; margin-bottom: 12px; display: block; }
-        .file-upload p { margin: 0; font-weight: 600; font-size: 0.95rem; color: var(--text-muted); }
+        .file-upload:active { transform: scale(0.98); }
+        .file-upload i { font-size: 2rem; color: var(--brand-accent); margin-bottom: 12px; display: block; }
+        .file-upload p { margin: 0; font-weight: 700; font-size: 0.95rem; color: var(--text-main); }
 
         /* --- Preview Sidebar --- */
         .preview-sidebar {
-            position: sticky;
-            top: 20px;
-            border-top: 8px solid var(--brand-primary);
+            position: static;
+            border-top: 10px solid var(--brand-primary);
+        }
+
+        @media (min-width: 1024px) {
+            .preview-sidebar { position: sticky; top: 30px; }
         }
 
         .preview-uid {
-            font-family: 'Courier New', monospace;
             font-weight: 800;
             color: var(--brand-accent);
             background: #f0f7ff;
-            padding: 10px 14px;
-            border-radius: 10px;
+            padding: 10px 16px;
+            border-radius: 12px;
             display: inline-block;
             margin-bottom: 25px;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
         }
 
         .preview-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 800; margin-bottom: 5px; display: block; }
-        .preview-value { font-weight: 700; color: var(--brand-primary); margin-bottom: 20px; }
+        .preview-value { font-weight: 800; color: var(--brand-primary); margin-bottom: 20px; font-size: 1.1rem; word-break: break-word; }
 
-        /* --- Buttons --- */
+        /* --- Pricing Visuals --- */
+        .total-price-card {
+            background: var(--brand-primary);
+            padding: 25px;
+            border-radius: 20px;
+            color: white;
+            box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.3);
+            margin: 25px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* --- Professional Buttons --- */
         .btn {
-            padding: 18px 32px;
+            padding: 16px 30px;
             border-radius: 16px;
-            font-weight: 700;
+            font-weight: 800;
             cursor: pointer;
-            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: 0.3s;
             font-size: 1rem;
             border: none;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 12px;
+            width: 100%;
         }
-        .btn-save { background: var(--brand-primary); color: white; width: 100%; box-shadow: 0 15px 30px -10px rgba(15, 23, 42, 0.3); }
-        .btn-save:hover { background: #000; transform: translateY(-2px); box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.4); }
+        .btn-save { background: var(--brand-primary); color: white; }
+        .btn-save:hover { background: #000; }
         
-        .btn-cancel { background: var(--white); color: var(--text-muted); font-size: 0.9rem; padding: 12px 24px; border: 1px solid var(--border); text-decoration: none; }
-        .btn-cancel:hover { background: #f1f5f9; color: var(--brand-primary); }
+        .btn-cancel { 
+            background: var(--white); color: var(--text-muted); 
+            font-size: 0.85rem; padding: 12px 20px; 
+            border: 1px solid var(--border); text-decoration: none;
+            width: auto;
+        }
 
-        .mt-40 { margin-top: 40px; }
+        @media (max-width: 640px) {
+            .form-header { text-align: center; justify-content: center; }
+            .btn-cancel { order: -1; width: 100%; margin-bottom: 10px; }
+            .booking-card { padding: 25px 20px; }
+        }
     </style>
 </head>
 <body>
@@ -189,10 +211,10 @@
     <div class="form-header">
         <div>
             <h1>Create Reservation</h1>
-            <p>Razak & Sons • Luxury Destination Management</p>
+            <p>Signature Destination Management</p>
         </div>
         <a href="{% url 'dashboard' %}" class="btn btn-cancel">
-            <i class="fas fa-arrow-left"></i> Dashboard
+            <i class="fas fa-arrow-left-long"></i> Dashboard
         </a>
     </div>
 
@@ -200,106 +222,104 @@
         <form method="post" enctype="multipart/form-data" id="bookingForm" class="booking-card">
             {% csrf_token %}
             
-            <div class="section-title"><i class="fas fa-user-circle"></i> Traveler Profile</div>
+            <div class="section-title"><i class="fas fa-user-tie"></i> Guest Information</div>
             <div class="form-grid">
                 <div class="input-group full-width">
                     <label>Customer Full Name</label>
-                    <input type="text" id="id_name" name="customer_name" placeholder="Full legal name" oninput="updatePreview()" required>
+                    <input type="text" id="id_name" name="customer_name" placeholder="Legal name" oninput="updatePreview()" required>
                 </div>
                 <div class="input-group">
-                    <label>Total Members</label>
+                    <label>PAX Count</label>
                     <input type="number" id="id_members" name="total_members" value="1" min="1" oninput="updatePreview()">
                 </div>
                 <div class="input-group">
-                    <label>Preferred Hotel Grade</label>
+                    <label>Hotel Tier</label>
                     <input type="text" id="id_hotel" name="hotel_stars" placeholder="e.g. 5-Star" oninput="updatePreview()">
                 </div>
                 <div class="input-group full-width">
-                    <label>Address Details</label>
-                    <textarea name="address" rows="3" placeholder="Complete residential address..."></textarea>
+                    <label>Full Residential Address</label>
+                    <textarea name="address" rows="3" placeholder="Street, City, Zip Code..."></textarea>
                 </div>
             </div>
 
-            <div class="section-title"><i class="fas fa-passport"></i> Identity Verification</div>
-            <div class="input-group full-width" style="margin-bottom: 35px;">
+            <div class="section-title"><i class="fas fa-fingerprint"></i> Compliance</div>
+            <div class="input-group full-width" style="margin-bottom: 40px;">
                 <div class="file-upload" onclick="document.getElementById('passport_input').click();">
-                    <i class="fas fa-cloud-arrow-up"></i>
-                    <p id="file-name">Click to upload scanned passport copy</p>
+                    <i class="fas fa-file-shield"></i>
+                    <p id="file-name">Upload Passport Scan</p>
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">PDF or Images accepted</span>
                     <input type="file" id="passport_input" name="passport_photo" style="display:none;" onchange="handleFileUpload(this)">
                 </div>
             </div>
 
-            <div class="section-title"><i class="fas fa-concierge-bell"></i> Preferences & Billing</div>
+            <div class="section-title"><i class="fas fa-vault"></i> Logistics & Billing</div>
             <div class="form-grid">
                 <div class="input-group full-width">
-                    <label>Meal Requirements</label>
+                    <label>Dietary Requirement</label>
                     <select name="meal_pref" id="id_meal" onchange="updatePreview()">
-                        <option value="Standard">Standard Selection</option>
+                        <option value="Standard">Standard Continental</option>
                         <option value="Vegetarian">Pure Vegetarian</option>
                         <option value="Halal">Halal Certified</option>
                     </select>
                 </div>
                 <div class="input-group">
-                    <label>Price Per Person (INR)</label>
-                    <input type="number" name="tour_price" placeholder="Package Price" oninput="updatePreview()">
+                    <label>Rate (INR)</label>
+                    <input type="number" name="tour_price" placeholder="Per Person" oninput="updatePreview()">
                 </div>
                 <div class="input-group">
                     <label>Payment Status</label>
                     <select name="payment_status">
-                        <option value="Pending">Pending</option>
+                        <option value="Pending">Unpaid</option>
                         <option value="Partial">Partial</option>
-                        <option value="Paid">Fully Paid</option>
+                        <option value="Paid">Cleared</option>
                     </select>
                 </div>
             </div>
 
-            <div class="mt-40">
+            <div style="margin-top: 30px;">
                 <button type="submit" class="btn btn-save">
-                    <i class="fas fa-check-double"></i> Finalize & Generate UID
+                    <i class="fas fa-check-double"></i> Save Reservation
                 </button>
             </div>
         </form>
 
         <aside class="booking-card preview-sidebar">
             <div style="text-align: center; margin-bottom: 25px;">
-                <span style="font-size: 10px; background: #f1f5f9; padding: 4px 12px; border-radius: 20px; color: var(--text-muted); font-weight: 800; text-transform: uppercase;">Real-time Draft</span>
+                <span style="font-size: 10px; background: #f1f5f9; padding: 5px 12px; border-radius: 30px; color: var(--text-muted); font-weight: 800; text-transform: uppercase;">Live Verification</span>
             </div>
 
-            <div class="preview-uid">RS-202602-PENDING</div>
+            <div class="preview-uid">ID-2026-PENDING</div>
 
-            <div class="mb-20">
-                <span class="preview-label">Client Name</span>
-                <div id="preview-name" class="preview-value" style="font-size: 1.3rem; letter-spacing: -0.5px;">[Name Entry]</div>
+            <div>
+                <span class="preview-label">Primary Guest</span>
+                <div id="preview-name" class="preview-value" style="color: var(--brand-accent);">[Name Required]</div>
             </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 10px;">
                 <div>
-                    <span class="preview-label">Members</span>
-                    <div id="preview-members" class="preview-value">1 Traveler(s)</div>
+                    <span class="preview-label">PAX</span>
+                    <div id="preview-members" class="preview-value">1 Member</div>
                 </div>
                 <div>
-                    <span class="preview-label">Accommodation</span>
+                    <span class="preview-label">Tier</span>
                     <div id="preview-hotel" class="preview-value">Standard</div>
                 </div>
             </div>
 
-            <div style="background: #f8fafc; padding: 20px; border-radius: 16px; border: 1px solid var(--border); margin-bottom: 20px;">
-                <span class="preview-label">Meal Preference</span>
-                <div id="preview-meal" style="font-size: 0.9rem; font-weight: 700; color: var(--brand-primary);">Standard Selection</div>
+            <div class="total-price-card">
+                <span class="preview-label" style="color: rgba(255,255,255,0.6);">Aggregate Collection</span>
+                <div id="preview-total" style="font-size: 1.8rem; font-weight: 800; letter-spacing: -1px;">₹0</div>
             </div>
 
-            <div style="background: var(--brand-primary); padding: 20px; border-radius: 16px; color: white;">
-                <span class="preview-label" style="color: rgba(255,255,255,0.6);">Total Collection Estimate</span>
-                <div id="preview-total" style="font-size: 1.5rem; font-weight: 800; letter-spacing: -1px;">₹0</div>
-            </div>
-
-            <div style="margin-top: 35px; font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: flex-start; gap: 12px; line-height: 1.4;">
-                <i class="fas fa-shield-halved" style="margin-top: 2px; color: var(--success); font-size: 1rem;"></i>
-                <p style="margin: 0;">Internal Calculation: Total collection is saved to the dashboard for revenue tracking.</p>
+            <div style="font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: flex-start; gap: 10px;">
+                <i class="fas fa-shield-halved" style="color: var(--success); margin-top: 3px;"></i>
+                <p style="margin: 0;">This record will be saved with a unique enterprise token for verification.</p>
             </div>
         </aside>
     </div>
 </div>
+
+
 
 <script>
     function updatePreview() {
@@ -308,16 +328,14 @@
         const hotel = document.getElementById('id_hotel').value;
         const meal = document.getElementById('id_meal').value;
         
-        // Dynamic Pricing Logic
+        // Dynamic Pricing Logic (Indian Formatting)
         const priceInput = document.getElementsByName('tour_price')[0].value || 0;
         const totalPrice = (parseFloat(priceInput) * members).toLocaleString('en-IN');
 
-        document.getElementById('preview-name').innerText = name || "[Name Entry]";
-        document.getElementById('preview-members').innerText = members + " Traveler(s)";
+        document.getElementById('preview-name').innerText = name || "[Name Required]";
+        document.getElementById('preview-members').innerText = members + (members > 1 ? " Members" : " Member");
         document.getElementById('preview-hotel').innerText = hotel || "Standard";
-        document.getElementById('preview-meal').innerText = meal;
 
-        // Update Total Collection in Preview
         const totalDisplay = document.getElementById('preview-total');
         if(totalDisplay) {
             totalDisplay.innerText = "₹" + totalPrice;
@@ -327,9 +345,11 @@
     function handleFileUpload(input) {
         if (input.files && input.files[0]) {
             const fileName = input.files[0].name;
+            const fileSize = (input.files[0].size / 1024 / 1024).toFixed(2);
             document.getElementById('file-name').innerHTML = `
                 <i class="fas fa-circle-check" style="color: var(--success);"></i><br>
-                <span style="color: var(--brand-primary); font-weight: 800;">${fileName} Ready</span>
+                <span style="color: var(--brand-primary); font-weight: 800; font-size: 0.85rem;">${fileName}</span><br>
+                <span style="font-size: 0.7rem; color: var(--text-muted);">${fileSize} MB • Ready</span>
             `;
         }
     }

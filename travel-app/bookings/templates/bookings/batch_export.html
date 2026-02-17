@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Archive & Backup Center | Razak & Sons</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root { 
+            --brand-midnight: #0f172a; 
+            --brand-royal: #2563eb; 
+            --brand-emerald: #10b981;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --bg-canvas: #f8fafc; 
+            --sidebar-width: 280px;
+        }
+
+        * { box-sizing: border-box; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-canvas); margin: 0; display: flex; color: var(--brand-midnight); min-height: 100vh; }
+        
+        /* --- Sidebar Navigation --- */
+        .sidebar { 
+            width: var(--sidebar-width); 
+            height: 100vh; 
+            background: var(--brand-midnight); 
+            color: white; 
+            position: fixed; 
+            display: flex; 
+            flex-direction: column; 
+            z-index: 1000;
+        }
+        .sidebar-brand { 
+            padding: 45px 30px; 
+            font-weight: 800; 
+            font-size: 1.2rem;
+            letter-spacing: 1.5px;
+            border-bottom: 1px solid rgba(255,255,255,0.05); 
+        }
+        .sidebar-menu { flex-grow: 1; padding: 30px 15px; }
+        .sidebar-menu a { 
+            display: flex; align-items: center; color: rgba(255,255,255,0.5); 
+            padding: 14px 20px; text-decoration: none; transition: 0.3s; 
+            gap: 12px; font-weight: 600; border-radius: 14px; margin-bottom: 8px;
+        }
+        .sidebar-menu a:hover, .sidebar-menu a.active { background: rgba(255,255,255,0.08); color: white; }
+        .sidebar-menu a.active { background: var(--brand-royal); box-shadow: 0 10px 20px -5px rgba(37, 99, 235, 0.4); }
+
+        /* --- Content Layout --- */
+        .main-content { 
+            margin-left: var(--sidebar-width); 
+            width: calc(100% - var(--sidebar-width)); 
+            padding: 40px 60px; 
+            transition: 0.3s ease;
+        }
+        
+        .manager-card { 
+            background: #ffffff; 
+            padding: clamp(20px, 5vw, 50px); 
+            border-radius: clamp(20px, 4vw, 35px); 
+            border: 1px solid #e2e8f0; 
+            box-shadow: 0 30px 60px -12px rgba(15, 23, 42, 0.05); 
+        }
+
+        /* --- Manager's Filter Console --- */
+        .filter-console {
+            background: #fcfdfe;
+            border: 1px solid #f1f5f9;
+            padding: 30px;
+            border-radius: 24px;
+            margin-bottom: 40px;
+        }
+        
+        .date-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+            gap: 20px; 
+            align-items: flex-end; 
+        }
+
+        .input-stack label { display: block; font-size: 10px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px; letter-spacing: 1px; }
+        .input-stack input { 
+            width: 100%; padding: 14px 18px; border-radius: 12px; border: 1.5px solid #e2e8f0; 
+            font-family: inherit; font-weight: 700; font-size: 0.95rem; background: #ffffff;
+        }
+
+        /* --- Action Buttons --- */
+        .btn { 
+            padding: 14px 24px; border-radius: 14px; border: none; font-weight: 800; 
+            cursor: pointer; transition: 0.3s; display: inline-flex;
+            align-items: center; gap: 10px; text-decoration: none; font-size: 0.9rem;
+        }
+        .btn-fetch { background: var(--brand-midnight); color: white; justify-content: center; }
+        .btn-zip { background: var(--brand-emerald); color: white; }
+        .btn-print { background: var(--brand-royal); color: white; }
+
+        /* --- Insight Strip --- */
+        .stats-strip {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 35px;
+        }
+        .insight-pill { background: #f8fafc; padding: 18px; border-radius: 18px; border: 1px solid #f1f5f9; }
+        .insight-label { font-size: 9px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 4px; }
+        .insight-value { font-size: 1.2rem; font-weight: 800; }
+
+        /* --- Responsive Table --- */
+        .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0 10px; min-width: 800px; }
+        th { text-align: left; font-size: 10px; color: var(--text-muted); padding: 10px 20px; text-transform: uppercase; }
+        td { padding: 18px 20px; font-size: 0.9rem; font-weight: 700; background: #ffffff; border-top: 1px solid #f1f5f9; border-bottom: 1px solid #f1f5f9; }
+        tr td:first-child { border-left: 1px solid #f1f5f9; border-top-left-radius: 15px; border-bottom-left-radius: 15px; }
+        tr td:last-child { border-right: 1px solid #f1f5f9; border-top-right-radius: 15px; border-bottom-right-radius: 15px; }
+
+        .badge-status { padding: 6px 12px; border-radius: 8px; font-size: 10px; font-weight: 800; text-transform: uppercase; background: #f1f5f9; }
+
+        /* --- MOBILE MEDIA QUERIES --- */
+        @media (max-width: 1024px) {
+            .sidebar { 
+                width: 100%; height: 65px; flex-direction: row; bottom: 0; top: auto; 
+                box-shadow: 0 -10px 30px rgba(0,0,0,0.08);
+            }
+            .sidebar-brand, .sidebar-menu span { display: none; }
+            .sidebar-menu { padding: 0; display: flex; width: 100%; justify-content: space-around; align-items: center; }
+            .sidebar-menu a { margin-bottom: 0; padding: 12px; border-radius: 12px; }
+            
+            .main-content { margin-left: 0; width: 100%; padding: 20px 15px 100px 15px; }
+            
+            .results-actions { flex-direction: column; gap: 12px; }
+            .results-actions .btn { width: 100%; justify-content: center; }
+        }
+
+        @media (max-width: 640px) {
+            .date-grid { grid-template-columns: 1fr; }
+            .manager-card { padding: 25px 20px; }
+            .insight-value { font-size: 1.1rem; }
+        }
+
+        /* --- Print Setup --- */
+        @media print { 
+            .sidebar, .no-print, .filter-console { display: none !important; } 
+            .main-content { margin: 0; width: 100%; padding: 0; } 
+            .manager-card { border: none; box-shadow: none; padding: 0; }
+            table { min-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-brand"><i class="fas fa-crown"></i> RAZAK & SONS</div>
+        <nav class="sidebar-menu">
+            <a href="{% url 'dashboard' %}"><i class="fas fa-chart-pie"></i> <span>Dashboard</span></a>
+            <a href="{% url 'new_booking' %}"><i class="fas fa-plus-square"></i> <span>New Reservation</span></a>
+            <a href="{% url 'batch_export' %}" class="active"><i class="fas fa-archive"></i> <span>Archive</span></a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <div class="manager-card">
+            
+            <section class="no-print">
+                <h1 style="margin: 0 0 8px 0; font-weight: 800; letter-spacing: -1.5px; font-size: clamp(1.5rem, 4vw, 2.2rem);">Data Archive Center</h1>
+                <p style="color: var(--text-muted); margin-bottom: 30px; font-weight: 500; font-size: 0.95rem;">Generate secure backups and batch-export vouchers.</p>
+
+                <div class="filter-console">
+                    <form method="GET" class="date-grid">
+                        <div class="input-stack">
+                            <label><i class="far fa-calendar-plus"></i> Period Start</label>
+                            <input type="date" name="from_date" value="{{ from_date }}" required>
+                        </div>
+                        <div class="input-stack">
+                            <label><i class="far fa-calendar-check"></i> Period End</label>
+                            <input type="date" name="to_date" value="{{ to_date }}" required>
+                        </div>
+                        <button type="submit" class="btn btn-fetch">
+                            <i class="fas fa-database"></i> Fetch
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            {% if bookings %}
+                <div class="results-meta">
+                    <div class="stats-strip">
+                        <div class="insight-pill">
+                            <span class="insight-label">Booking Volume</span>
+                            <div class="insight-value">{{ bookings.count }} Files</div>
+                        </div>
+                        <div class="insight-pill">
+                            <span class="insight-label">Net Revenue</span>
+                            <div class="insight-value">₹{{ total_revenue|default:"0" }}</div>
+                        </div>
+                        <div class="insight-pill">
+                            <span class="insight-label">Total Pax</span>
+                            <div class="insight-value">{{ total_pax|default:"0" }} PAX</div>
+                        </div>
+                    </div>
+
+                    <div class="results-actions no-print" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px;">
+                        <h2 style="font-size: 0.9rem; font-weight: 800; margin: 0; color: var(--text-muted);">
+                            Period: <span style="color: var(--brand-royal);">{{ from_date }}</span> — <span style="color: var(--brand-royal);">{{ to_date }}</span>
+                        </h2>
+                        
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap; width: inherit;">
+                            <a href="{% url 'export_zip' %}?from_date={{ from_date }}&to_date={{ to_date }}" class="btn btn-zip">
+                                <i class="fas fa-file-zipper"></i> ZIP Archive
+                            </a>
+                            <button onclick="window.print()" class="btn btn-print">
+                                <i class="fas fa-print"></i> Print Manifest
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Verification UID</th>
+                                <th>Customer Name</th>
+                                <th>Pax</th>
+                                <th>Financials</th>
+                                <th>Status</th>
+                                <th class="no-print" style="text-align: right;">Voucher</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for b in bookings %}
+                            <tr>
+                                <td style="color: var(--brand-royal); font-family: monospace;">#{{ b.booking_id }}</td>
+                                <td>{{ b.customer_name }}</td>
+                                <td><i class="fas fa-user-group" style="font-size: 0.7rem; opacity: 0.4;"></i> {{ b.total_members }}</td>
+                                <td>₹{{ b.tour_price }}</td>
+                                <td><span class="badge-status">{{ b.payment_status }}</span></td>
+                                <td class="no-print" style="text-align: right;">
+                                    <a href="{% url 'booking_detail' b.booking_id %}" target="_blank" style="color: var(--brand-midnight); background: #f1f5f9; padding: 10px; border-radius: 10px;">
+                                        <i class="fas fa-external-link-alt"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div style="text-align: center; padding: 60px 0; color: #94a3b8;">
+                    <div style="background: #f8fafc; width: 80px; height: 80px; border-radius: 30px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                        <i class="fas fa-box-archive fa-2x" style="opacity: 0.15;"></i>
+                    </div>
+                    <h3 style="margin: 0; color: var(--brand-midnight); font-weight: 800; font-size: 1.1rem;">Archive Retrieval Ready</h3>
+                    <p style="margin-top: 8px; font-weight: 500; font-size: 0.9rem;">Define a date range above to securely access data.</p>
+                </div>
+            {% endif %}
+        </div>
+    </main>
+
+</body>
+</html>

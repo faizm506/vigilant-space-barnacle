@@ -143,4 +143,86 @@ def delete_booking(request, booking_id):
     return redirect('dashboard')
 
 
+from django.db.models import Sum
 
+@login_required
+def batch_export_view(request):
+    start_date = request.GET.get('from_date')
+    end_date = request.GET.get('to_date')
+    
+    bookings = None
+    total_revenue = 0
+    total_pax = 0
+    
+    if start_date and end_date:
+        bookings = Booking.objects.filter(
+            created_at__date__range=[start_date, end_date]
+        ).order_by('created_at')
+        
+        # Calculate Totals for the Insight Strip
+        # We use .aggregate to perform math directly in the database for speed
+        stats = bookings.aggregate(
+            rev_sum=Sum('tour_price'),
+            pax_sum=Sum('total_members')
+        )
+        total_revenue = stats['rev_sum'] or 0
+        total_pax = stats['pax_sum'] or 0
+
+    context = {
+        'bookings': bookings,
+        'from_date': start_date,
+        'to_date': end_date,
+        'total_revenue': f"{total_revenue:,}", # Formats with commas like 1,00,000
+        'total_pax': total_pax,
+    }
+    return render(request, 'bookings/batch_export.html', context)
+
+
+import io
+import zipfile
+from django.template.loader import render_to_string
+from django.http import HttpResponse
+from weasyprint import HTML
+from .models import Booking
+
+@login_required
+def export_batch_zip(request):
+    start_date = request.GET.get('from_date')
+    end_date = request.GET.get('to_date')
+    
+    if not start_date or not end_date:
+        return HttpResponse("Please select a valid date range.", status=400)
+
+    bookings = Booking.objects.filter(created_at__date__range=[start_date, end_date])
+
+    if not bookings.exists():
+        return HttpResponse("No records found for this period.", status=404)
+
+    zip_buffer = io.BytesIO()
+
+    with zipfile.ZipFile(zip_buffer, 'w') as zip_file:
+        for booking in bookings:
+            # We pass the full request to render_to_string to handle absolute paths
+            html_string = render_to_string('bookings/booking_detail.html', {
+                'booking': booking,
+                'is_pdf': True # Optional flag if you want to hide buttons in the PDF
+            }, request=request)
+            
+            pdf_file = io.BytesIO()
+            # base_url ensures that your CSS and static files are found correctly
+            HTML(string=html_string, base_url=request.build_absolute_uri('/')).write_pdf(pdf_file)
+            
+            # Sanitize filename: remove spaces/special characters from customer name
+            safe_name = "".join([c for c in booking.customer_name if c.isalnum() or c==' ']).rstrip().replace(' ', '_')
+            file_name = f"{booking.booking_id}_{safe_name}.pdf"
+            
+            zip_file.writestr(file_name, pdf_file.getvalue())
+
+    zip_buffer.seek(0)
+    response = HttpResponse(zip_buffer.read(), content_type='application/zip')
+    
+    # Branded filename for the ZIP itself
+    download_name = f"RazakSons_Backup_{start_date}_to_{end_date}.zip"
+    response['Content-Disposition'] = f'attachment; filename="{download_name}"'
+    
+    return response

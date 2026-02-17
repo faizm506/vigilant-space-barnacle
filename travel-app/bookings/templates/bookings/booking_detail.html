@@ -3,227 +3,286 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Booking Voucher - {{ booking.booking_id }}</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <title>Voucher_{{ booking.booking_id }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
             --brand-dark: #0f172a;
-            --brand-blue: #2563eb;
-            --text-grey: #64748b;
+            --brand-accent: #2563eb;
+            --text-main: #1e293b;
+            --text-light: #64748b;
             --border: #e2e8f0;
+        }
+
+        * { 
+            box-sizing: border-box; 
+            -webkit-print-color-adjust: exact; 
+            print-color-adjust: exact;         
+        }
+
+        /* --- Print Centering Logic --- */
+        @page {
+            size: A4;
+            margin: 0;
         }
 
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
-            background: #f1f5f9; 
-            padding: 40px 20px; 
+            background: #f8fafc; 
+            padding: 0; 
             margin: 0; 
             color: var(--brand-dark);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         
-        /* --- Tool Bar --- */
+        /* --- Management Header --- */
         .no-print-header {
-            max-width: 800px; margin: 0 auto 20px;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-
-        /* --- Main Document --- */
-        .receipt-container { 
-            background: white; 
-            max-width: 800px; 
-            margin: auto; 
-            padding: 50px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.05); 
-            border-radius: 12px;
-            border: 1px solid var(--border);
-        }
-
-        /* Branding Header */
-        .doc-header { 
+            width: 100%;
+            max-width: 210mm; 
+            margin: 20px auto;
             display: flex; 
             justify-content: space-between; 
-            align-items: flex-start;
-            border-bottom: 2px solid var(--brand-dark); 
-            padding-bottom: 30px; 
-            margin-bottom: 30px;
+            align-items: center;
+            padding: 0 20px;
+            gap: 10px;
         }
 
-        .brand-logo h1 { 
-            margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -1px; 
-            display: flex; align-items: center; gap: 10px;
+        /* --- A4 Document Container --- */
+        .receipt-container { 
+            background: white; 
+            width: 210mm; 
+            min-height: 297mm; 
+            padding: 20mm; 
+            position: relative;
+            border: 1px solid var(--border);
+            box-shadow: 0 0 40px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
         }
-        .brand-logo p { margin: 5px 0 0; color: var(--text-grey); font-size: 13px; font-weight: 500; }
+
+        .receipt-container::before {
+            content: ""; position: absolute; top: 0; left: 0; right: 0;
+            height: 8px; background: var(--brand-dark);
+        }
+
+        /* --- Branding --- */
+        .doc-header { 
+            display: flex; justify-content: space-between; align-items: flex-start;
+            margin-bottom: 40px; padding-bottom: 30px; border-bottom: 1.5px solid #f1f5f9;
+        }
+        .brand-logo h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -1px; }
+        .brand-logo p { margin: 4px 0 0; color: var(--brand-accent); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; }
 
         .invoice-meta { text-align: right; }
-        .invoice-meta h2 { margin: 0; font-size: 20px; color: var(--brand-blue); text-transform: uppercase; letter-spacing: 2px; }
-        .invoice-meta p { margin: 5px 0 0; font-size: 14px; font-weight: 600; color: var(--text-grey); }
+        .invoice-meta h2 { margin: 0; font-size: 18px; color: var(--brand-dark); font-weight: 700; }
+        .invoice-meta p { margin: 3px 0 0; font-size: 12px; font-weight: 600; color: var(--text-light); }
 
-        /* Sections */
-        .grid-row { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 30px; }
-        
+        /* --- Information Layout --- */
         .section-label { 
-            font-size: 11px; font-weight: 800; text-transform: uppercase; 
-            color: var(--brand-blue); letter-spacing: 1px; margin-bottom: 12px;
-            display: block; border-bottom: 1px solid var(--border); padding-bottom: 5px;
+            font-size: 10px; font-weight: 800; text-transform: uppercase; 
+            color: var(--text-light); letter-spacing: 1.2px; margin-bottom: 15px;
+            display: block; border-left: 3px solid var(--brand-accent); padding-left: 10px;
         }
 
-        .data-item { margin-bottom: 15px; }
-        .data-item strong { display: block; font-size: 10px; color: var(--text-grey); text-transform: uppercase; }
-        .data-item span { font-size: 15px; font-weight: 600; display: block; margin-top: 2px; }
+        .main-info-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 40px; margin-bottom: 35px; }
+        .data-row { margin-bottom: 15px; }
+        .data-row strong { display: block; font-size: 10px; color: var(--text-light); text-transform: uppercase; margin-bottom: 2px; }
+        .data-row span { font-size: 14px; font-weight: 600; word-break: break-word; }
 
-        /* Passport Identity Box */
-        .identity-card { 
-            border: 1px solid var(--border); 
-            border-radius: 12px; 
-            padding: 15px; 
-            background: #f8fafc;
-            text-align: center;
+        .identity-frame { 
+            border: 1.5px solid var(--border); border-radius: 12px; 
+            padding: 8px; background: #fcfdfe; height: 180px;
+            display: flex; align-items: center; justify-content: center;
         }
-        .identity-card img { max-width: 100%; height: 180px; object-fit: cover; border-radius: 8px; border: 1px solid #fff; }
+        .identity-frame img { max-width: 100%; max-height: 100%; object-fit: contain; }
 
-        /* Financial Table */
-        .financial-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .financial-table th { text-align: left; font-size: 12px; color: var(--text-grey); padding: 10px; border-bottom: 1px solid var(--border); }
-        .financial-table td { padding: 15px 10px; font-weight: 600; border-bottom: 1px solid #f8fafc; }
-        .total-row { background: var(--brand-dark); color: white; }
-        .total-row td { padding: 20px 10px; font-size: 18px; border-radius: 0 0 8px 8px; }
+        .pref-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 35px; }
+        .pref-box { background: #f8fafc; border: 1px solid #f1f5f9; padding: 12px; border-radius: 10px; }
+        .pref-box strong { font-size: 9px; color: var(--text-light); text-transform: uppercase; display: block; }
+        .pref-box span { font-size: 13px; font-weight: 700; }
 
-        /* T&C Section */
-        .terms-box { 
-            margin-top: 40px; 
-            background: #fff; 
-            border: 1px dashed var(--border); 
-            padding: 20px; 
-            border-radius: 8px; 
+        /* --- Table --- */
+        .table-wrapper { width: 100%; overflow-x: auto; margin-bottom: 40px; }
+        .financial-table { width: 100%; border-collapse: collapse; min-width: 500px; }
+        .financial-table th { background: #f8fafc; text-align: left; font-size: 10px; color: var(--text-light); padding: 12px 15px; border-bottom: 2px solid var(--brand-dark); }
+        .financial-table td { padding: 15px; font-size: 13px; font-weight: 600; border-bottom: 1px solid #f1f5f9; }
+        .total-row td { background: var(--brand-dark); color: white; padding: 18px 15px; font-size: 16px; font-weight: 800; border: none; }
+
+        /* --- Footer & Signature --- */
+        .footer-grid { 
+            display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 40px; 
+            margin-top: auto;
+            padding-bottom: 30px;
         }
-        .terms-box h4 { margin: 0 0 10px 0; font-size: 12px; text-transform: uppercase; }
-        .terms-box p { margin: 0; font-size: 11px; color: var(--text-grey); line-height: 1.6; }
+        
+        .terms-text { font-size: 10px; color: var(--text-light); line-height: 1.6; }
+        .signature-block { text-align: center; }
+        .signature-line { border-bottom: 2px solid var(--brand-dark); width: 100%; height: 50px; margin-bottom: 10px; }
+        .signature-block p { font-size: 11px; font-weight: 800; text-transform: uppercase; margin: 0; }
 
-        /* Action Buttons */
-        .btn { 
-            padding: 12px 24px; border-radius: 8px; font-weight: 700; 
-            text-decoration: none; cursor: pointer; border: none; 
-            display: inline-flex; align-items: center; gap: 8px; transition: 0.3s;
-            font-size: 14px;
+        .bottom-verifier { text-align: center; border-top: 1px solid #f1f5f9; padding-top: 15px; margin-bottom: 5mm; }
+
+        /* --- MOBILE RESPONSIVE OVERRIDES --- */
+        @media (max-width: 210mm) {
+            body { padding: 10px; }
+            .no-print-header { flex-direction: column; width: 100%; margin: 10px 0 20px 0; }
+            .no-print-header .btn { width: 100%; justify-content: center; }
+            
+            .receipt-container { 
+                width: 100%; 
+                height: auto; 
+                padding: 30px 20px; 
+                box-shadow: none;
+                border-radius: 16px;
+            }
+
+            .doc-header { flex-direction: column; gap: 20px; text-align: center; align-items: center; }
+            .invoice-meta { text-align: center; }
+            .main-info-grid { grid-template-columns: 1fr; gap: 30px; }
+            .pref-grid { grid-template-columns: 1fr 1fr; }
+            .footer-grid { grid-template-columns: 1fr; gap: 30px; text-align: center; }
+            .signature-block { width: 200px; margin: 0 auto; }
         }
-        .btn-back { color: var(--text-grey); background: white; border: 1px solid var(--border); }
-        .btn-back:hover { background: #f8fafc; color: var(--brand-dark); }
-        .btn-download { background: var(--brand-dark); color: white; }
-        .btn-download:hover { background: #000; transform: translateY(-2px); }
 
+        @media (max-width: 480px) {
+            .pref-grid { grid-template-columns: 1fr; }
+        }
+
+        /* --- Print Setup --- */
         @media print { 
             .no-print-header { display: none !important; } 
-            body { padding: 0; background: white; } 
-            .receipt-container { box-shadow: none; border: none; max-width: 100%; padding: 0; }
-            .identity-card { background: #fff; border: 1px solid #eee; }
+            body { background: white; padding: 0; } 
+            .receipt-container { 
+                box-shadow: none; border: none; margin: 0 auto; 
+                width: 210mm; height: 297mm; padding: 20mm; 
+            }
+            .signature-line { border-bottom: 1.5px solid #000 !important; }
         }
+
+        /* Buttons */
+        .btn { padding: 12px 24px; border-radius: 10px; font-weight: 700; text-decoration: none; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 8px; transition: 0.3s; font-size: 14px; }
+        .btn-back { color: var(--text-light); background: white; border: 1px solid var(--border); }
+        .btn-download { background: var(--brand-dark); color: white; }
     </style>
 </head>
 <body>
 
 <div class="no-print-header">
     <a href="{% url 'dashboard' %}" class="btn btn-back">
-        <i class="fas fa-chevron-left"></i> Back to Portal
+        <i class="fas fa-arrow-left"></i> Portal Dashboard
     </a>
     <button onclick="window.print()" class="btn btn-download">
-        <i class="fas fa-print"></i> Print Voucher
+        <i class="fas fa-print"></i> Generate PDF/Print
     </button>
 </div>
 
 <div class="receipt-container">
     <div class="doc-header">
         <div class="brand-logo">
-            <h1><i class="fas fa-crown" style="color:var(--brand-blue)"></i> RAZAK & SONS</h1>
-            <p>Luxury Travel & Destination Management</p>
-            <p style="font-size: 11px;"><i class="fas fa-location-dot"></i> Ahmedabad Office, Gujarat, India</p>
+            <h1>RAZAK & SONS</h1>
+            <p>Luxury Destination Management</p>
+            <div style="font-size: 10px; color: var(--text-light); margin-top: 10px;">
+                <i class="fas fa-location-dot"></i> Ahmedabad, Gujarat, India • info@razakandsons.com
+            </div>
         </div>
         <div class="invoice-meta">
-            <h2>BOOKING VOUCHER</h2>
-            <p>REF: {{ booking.booking_id }}</p>
-            <p>DATE: {{ booking.created_at|date:"d M Y" }}</p>
+            <p style="color: var(--brand-accent); letter-spacing: 2px; margin-bottom: 5px; font-weight: 800;">OFFICIAL VOUCHER</p>
+            <h2>Ref: {{ booking.booking_id }}</h2>
+            <p>Date: {{ booking.created_at|date:"d M Y" }}</p>
         </div>
     </div>
 
-    <div class="grid-row">
+    <div class="main-info-grid">
         <div>
-            <span class="section-label">Traveler Details</span>
-            <div class="data-item">
-                <strong>Primary Customer</strong>
+            <span class="section-label">Traveler Profile</span>
+            <div class="data-row">
+                <strong>Primary Guest Name</strong>
                 <span>{{ booking.customer_name }}</span>
             </div>
-            <div class="data-item">
-                <strong>Registered Address</strong>
-                <span style="font-weight: 400; font-size: 13px;">{{ booking.address }}</span>
+            <div class="data-row">
+                <strong>Contact Address</strong>
+                <span style="font-weight: 400; color: var(--text-light); font-size: 12px;">{{ booking.address }}</span>
             </div>
-            <div class="data-item">
-                <strong>Group Size</strong>
-                <span>{{ booking.total_members }} Person(s)</span>
+            <div class="data-row">
+                <strong>Group Composition</strong>
+                <span>{{ booking.total_members }} Travelers (Verified)</span>
             </div>
         </div>
         <div>
-            <span class="section-label">Identity Verification</span>
-            <div class="identity-card">
+            <span class="section-label">Identity Document</span>
+            <div class="identity-frame">
                 {% if booking.passport_photo %}
-                    <img src="{{ booking.passport_photo.url }}" alt="Passport Scan">
+                    <img src="{{ booking.passport_photo.url }}" alt="Identity Scan">
                 {% else %}
-                    <div style="padding: 60px 0; color: #cbd5e1;">
-                        <i class="fas fa-user-slash fa-3x"></i>
-                        <p style="font-size: 11px; margin-top: 10px;">PASSPORT NOT ATTACHED</p>
+                    <div style="text-align: center; color: #cbd5e1;">
+                        <i class="fas fa-id-card fa-3x"></i>
+                        <p style="font-size: 9px; margin-top: 8px;">NO SCAN PROVIDED</p>
                     </div>
                 {% endif %}
             </div>
         </div>
     </div>
 
-    <span class="section-label">Itinerary Preferences</span>
-    <div class="grid-row" style="grid-template-columns: repeat(3, 1fr); gap: 20px;">
+    <span class="section-label">Package Inclusions</span>
+    <div class="pref-grid">
         {% for key, value in booking.additional_info.items %}
-            <div class="data-item">
+            <div class="pref-box">
                 <strong>{{ key|title }}</strong>
-                <span>{{ value|default:"--" }}</span>
+                <span>{{ value|default:"Standard" }}</span>
             </div>
         {% empty %}
-            <p style="grid-column: span 3; color: var(--text-grey); font-size: 12px;">Standard package requirements apply.</p>
+            <div class="pref-box" style="grid-column: span 3; text-align: center;">
+                <span>Default Luxury Package Inclusions Apply</span>
+            </div>
         {% endfor %}
     </div>
 
-    <span class="section-label">Payment Summary</span>
-    <table class="financial-table">
-        <thead>
-            <tr>
-                <th>Description</th>
-                <th>Quantity</th>
-                <th style="text-align: right;">Amount (INR)</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Customized Tour Package - Ref {{ booking.booking_id }}</td>
-                <td>{{ booking.total_members }} Adult(s)</td>
-                <td style="text-align: right;">₹{{ booking.tour_price }}</td>
-            </tr>
-            <tr class="total-row">
-                <td colspan="2" style="font-weight: 800;">TOTAL PAYABLE</td>
-                <td style="text-align: right; font-weight: 800;">₹{{ booking.tour_price }}</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <div class="terms-box">
-        <h4>General Terms & Conditions</h4>
-        <p>
-            1. This voucher is valid only for the mentioned travelers and dates.<br>
-            2. Any cancellation or modification is subject to Razak & Sons company policy.<br>
-            3. Travelers must carry original identification documents during the journey.<br>
-            4. This is a computer-generated document and does not require a physical signature for digital validation.
-        </p>
+    <span class="section-label">Financial Clearance</span>
+    <div class="table-wrapper">
+        <table class="financial-table">
+            <thead>
+                <tr>
+                    <th>Service Description</th>
+                    <th>Booking Status</th>
+                    <th style="text-align: right;">Gross Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Customized Travel Itinerary - Ref {{ booking.booking_id }}</td>
+                    <td>{{ booking.payment_status|upper }}</td>
+                    <td style="text-align: right;">₹{{ booking.tour_price }}</td>
+                </tr>
+                <tr class="total-row">
+                    <td colspan="2">TOTAL PACKAGE VALUE (INR)</td>
+                    <td style="text-align: right;">₹{{ booking.tour_price }}</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
-    <div style="margin-top: 40px; text-align: center;">
-        <p style="font-size: 10px; color: var(--text-grey); text-transform: uppercase; letter-spacing: 2px;">
-            www.razakandsons.com • Verified Management System
+    <div class="footer-grid">
+        <div class="terms-text">
+            <b>Management Terms:</b><br>
+            1. This voucher must be presented along with original IDs at check-in.<br>
+            2. Cancellation/modifications are governed by company policy.<br>
+            3. This document is valid for guest(s) mentioned above only.
+        </div>
+        <div class="signature-block">
+            <div class="signature-line"></div>
+            <p>Authorized Signature</p>
+            <span style="font-size: 9px; color: var(--text-light);">Razak & Sons Enterprise</span>
+        </div>
+    </div>
+
+    <div class="bottom-verifier">
+        <p style="font-size: 8px; color: #cbd5e1; text-transform: uppercase; letter-spacing: 3px; margin: 0;">
+            Computer Generated Record • Digital Verifier: {{ booking.booking_id }} • 2026 Operations
         </p>
     </div>
 </div>
