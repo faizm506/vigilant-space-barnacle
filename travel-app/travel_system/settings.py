@@ -125,9 +125,11 @@ SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 
 
-LOGIN_REDIRECT_URL = '/dashboard/' 
+# travel_system/settings.py
 
-LOGOUT_REDIRECT_URL = '/'
+LOGIN_URL = 'login'          # Points to the name='login' in your urls.py
+LOGIN_REDIRECT_URL = 'dashboard'  # Where to go after successful login
+LOGOUT_REDIRECT_URL = 'login'     # Where to go after logging out
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

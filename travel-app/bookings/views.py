@@ -34,31 +34,53 @@ def dashboard(request):
     # Otherwise, render the full dashboard page
     return render(request, 'bookings/dashboard.html', context)
 
+from django.contrib import messages
+from django.db import transaction
+
 @login_required
 def new_booking(request):
     if request.method == 'POST':
-        # 1. Capture the raw inputs
-        price_per_person = float(request.POST.get('tour_price', 0) or 0)
-        members_count = int(request.POST.get('total_members', 1) or 1)
+        try:
+            # 1. Capture and Validate raw inputs
+            # Using try/except blocks ensures the app doesn't crash on bad input
+            try:
+                price_per_person = float(request.POST.get('tour_price', 0) or 0)
+                members_count = int(request.POST.get('total_members', 1) or 1)
+            except ValueError:
+                messages.error(request, "Invalid numeric input for price or members.")
+                return render(request, 'bookings/booking_form.html')
 
-        # 2. Automatically calculate the Total Price
-        calculated_total = price_per_person * members_count
+            # 2. Automatically calculate the Total Price
+            calculated_total = price_per_person * members_count
 
-        # 3. Create the record
-        booking = Booking.objects.create(
-            customer_name=request.POST.get('customer_name'),
-            address=request.POST.get('address'),
-            total_members=members_count,
-            passport_photo=request.FILES.get('passport_photo'),
-            tour_price=calculated_total, # Saves the full total (e.g., 45000 * 2)
-            payment_status=request.POST.get('payment_status'),
-            additional_info={
-                "Price Per Person": f"₹{price_per_person}",
-                "Meal Preference": request.POST.get('meal_pref'),
-                "Hotel Grade": request.POST.get('hotel_stars')
-            }
-        )
-        return redirect('dashboard')
+            # 3. Create the record inside an atomic transaction
+            # This ensures that if the file upload fails, the database entry isn't half-saved
+            with transaction.atomic():
+                booking = Booking.objects.create(
+                    customer_name=request.POST.get('customer_name'),
+                    address=request.POST.get('address'),
+                    total_members=members_count,
+                    passport_photo=request.FILES.get('passport_photo'),
+                    tour_price=calculated_total,
+                    payment_status=request.POST.get('payment_status'),
+                    # Enhanced JSON Data with Timestamp and Manager Info
+                    additional_info={
+                        "Price Per Person": f"₹{price_per_person}",
+                        "Meal Preference": request.POST.get('meal_pref'),
+                        "Hotel Grade": request.POST.get('hotel_stars'),
+                        "Created By": request.user.username,
+                        "Entry Method": "Standard Portal"
+                    }
+                )
+
+            # 4. Success Feedback
+            messages.success(request, f"Voucher {booking.booking_id} generated for {booking.customer_name}.")
+            return redirect('dashboard')
+
+        except Exception as e:
+            # Catch-all for unexpected errors (e.g., database connection, file system issues)
+            messages.error(request, f"An unexpected error occurred: {str(e)}")
+            
     return render(request, 'bookings/booking_form.html')
 
 

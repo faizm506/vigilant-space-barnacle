@@ -61,7 +61,7 @@
         .sidebar-footer { padding: 30px; border-top: 1px solid rgba(255,255,255,0.05); }
 
         /* --- Main Content Layout --- */
-        .main-content { 
+        #main-dashboard-content { 
             margin-left: var(--sidebar-width); 
             width: calc(100% - var(--sidebar-width)); 
             padding: 40px 50px; 
@@ -119,7 +119,7 @@
         .data-card {
             background: white; border-radius: 28px; padding: 15px;
             box-shadow: var(--card-shadow); border: 1px solid rgba(0,0,0,0.03);
-            overflow-x: auto; /* Fixed: Mobile table scroll */
+            overflow-x: auto; 
         }
         table { width: 100%; border-collapse: separate; border-spacing: 0 12px; min-width: 900px; }
         th { padding: 15px 25px; text-align: left; font-size: 0.75rem; text-transform: uppercase; color: #94a3b8; letter-spacing: 1.5px; font-weight: 800; }
@@ -142,7 +142,7 @@
             .sidebar-brand, .sidebar-footer, .sidebar-menu span { display: none; }
             .sidebar-menu { padding: 0; display: flex; width: 100%; justify-content: space-around; align-items: center; }
             .sidebar-menu a { margin-bottom: 0; padding: 10px; font-size: 1.2rem; }
-            .main-content { margin-left: 0; width: 100%; padding: 20px 20px 100px 20px; }
+            #main-dashboard-content { margin-left: 0; width: 100%; padding: 20px 20px 100px 20px; }
             .header { margin-bottom: 25px; }
             .stats-grid { grid-template-columns: 1fr; }
             .btn-group { width: 100%; }
@@ -158,7 +158,7 @@
 </head>
 <body>
 
-    <aside class="sidebar">
+    <aside class="sidebar no-print">
         <div class="sidebar-brand">
             <i class="fas fa-crown" style="color: var(--brand-accent);"></i>
             <span>RAZAK & SONS</span>
@@ -178,7 +178,7 @@
         </div>
     </aside>
 
-    <main class="main-content">
+    <main id="main-dashboard-content">
         <header class="header">
             <div>
                 <h1>Business Overview</h1>
@@ -224,7 +224,9 @@
             <form method="GET" action="{% url 'dashboard' %}" class="search-wrapper" 
                   hx-get="{% url 'dashboard' %}" 
                   hx-trigger="keyup changed delay:500ms from:.search-input" 
-                  hx-target="#booking-table-body">
+                  hx-target="#main-dashboard-content"
+                  hx-select="#main-dashboard-content"
+                  hx-push-url="true">
                 <i class="fas fa-search"></i>
                 <input type="text" name="search" class="search-input" 
                        placeholder="Filter records..." 
@@ -232,7 +234,7 @@
             </form>
             <div class="btn-group">
                 <a href="{% url 'new_booking' %}" class="btn btn-success"><i class="fas fa-plus"></i> <span>Create</span></a>
-                <a href="{% url 'export_data' %}" class="btn btn-primary"><i class="fas fa-download"></i> <span>CSV</span></a>
+                <a href="{% url 'export_data' %}" class="btn btn-primary"><i class="fas fa-download"></i> <span>Export</span></a>
             </div>
         </div>
 
